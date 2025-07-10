@@ -12,5 +12,5 @@ fetch(BACKEND_PING_URL, { cache: "no-store" })
     loader.querySelector("p").textContent = "Still waking up the backend...";
     setTimeout(() => {
       loader.style.display = "none"; // hide after 10s regardless
-    }, 10000);
+    }, 60000);
   });
