@@ -763,7 +763,7 @@ img { display: block; max-width: 100%; }
 .footer-social .social-icon {
   width: 100px;
   height: 100px;
-  margin-left: 80px;
+  margin-left: 20px;
   transition: filter 0.2s ease;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
