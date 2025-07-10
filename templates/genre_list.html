@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ genre }} Anime{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ genre }} Anime</h1>
+
+{% if not anime_list %}
+    <p>No titles found. Try another genre.</p>
+{% else %}
+<div class="cards-grid">
+    {% for a in anime_list %}
+    <div class="anime-card">
+        <img src="{{ a.poster or url_for('static', filename='img/logo.svg') }}" alt="{{ a.title }}">
+        <h3>
+            <a href="{{ url_for('anime_detail', title=a.title|urlencode) }}">
+                {{ a.title }}
+            </a>
+        </h3>
+        <p class="score">Score: {{ a.score }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

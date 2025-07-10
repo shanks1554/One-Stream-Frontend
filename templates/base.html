@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}One Stream{% endblock %}</title>
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ── Header / Brand ───────────────────────────────────────── -->
+<header class="site-header">
+    <a href="{{ url_for('home') }}" class="brand">
+        <img src="{{ url_for('logo') }}" alt="One Stream logo" height="60">
+        <span>One Stream</span>
+    </a>
+</header>
+
+<!-- Back button (all pages except home & anime_detail) -->
+{% if request.endpoint not in ['home', 'anime_detail'] %}
+<div class="back-container">
+    <a href="javascript:history.back()" class="back-btn">← Back</a>
+</div>
+{% endif %}
+
+<!-- 🔎 Global Search / Autocomplete Bar -->
+<div class="autocomplete-bar">
+    <input id="search-input" type="text" placeholder="Search anime...">
+    <div id="autocomplete-results"></div>
+</div>
+
+<!-- ── Page‑specific content ──────────────────────────────── -->
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-grid">
+
+    <!-- Brand — logo & name in one row -->
+    <div class="footer-brand">
+      <img src="{{ url_for('static', filename='img/logo.svg') }}"
+           alt="One Stream logo" class="footer-logo">      
+    </div>
+
+    <!-- Quick links -->
+    <nav class="footer-links">
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('explore') }}">Explore</a></li>
+        <li><a href="{{ url_for('recommend_by_watched') }}">Recommend</a></li>
+      </ul>
+    </nav>
+
+    <!-- Social icons only -->
+    <div class="footer-social">
+      <ul>
+        <li>
+          <a href="https://github.com/shanks1554" target="_blank"
+             aria-label="GitHub" title="GitHub">
+            <img src="{{ url_for('static', filename='img/github.svg') }}"
+                 class="social-icon" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="https://linkedin.com/in/deep-nagpal-15405d" target="_blank"
+             aria-label="LinkedIn" title="LinkedIn">
+            <img src="{{ url_for('static', filename='img/linkedin.svg') }}"
+                 class="social-icon" alt="">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 One Stream. All rights reserved.</p>
+  </div>
+</footer>
+
+
+<!-- Core Scripts -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

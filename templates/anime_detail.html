@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ anime.title }} | One Stream{% endblock %}
+
+{% block content %}
+<div class="detail-wrapper">
+
+  <!-- Cover -->
+  <div class="cover-col">
+    <img src="{{ anime.poster }}" alt="{{ anime.title }} poster" class="cover-img" />
+    <a href="javascript:history.back()" class="pretty-back-btn">← Back</a>
+  </div>
+
+  <!-- Info -->
+  <div class="info-col">
+    <h1 class="detail-title">{{ anime.title }}</h1>
+
+    <ul class="meta-grid">
+      <li><span>Score</span><strong>{{ anime.score }}</strong></li>
+      <li><span>Episodes</span><strong>{{ anime.episodes }}</strong></li>
+      <li><span>Studio</span><strong>{{ anime.studios }}</strong></li>
+      <li><span>Popularity</span><strong>{{ anime.popularity }}</strong></li>
+      <li><span>Ranked</span><strong>{{ anime.ranked }}</strong></li>
+    </ul>
+
+    <h2 class="syn-heading">Synopsis</h2>
+    <p class="synopsis">{{ anime.synopsis }}</p>
+  </div>
+
+</div>
+{% endblock %}

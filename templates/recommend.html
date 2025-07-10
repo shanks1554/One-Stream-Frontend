@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Get Recommendations{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Recommendations by Watched List</h1>
+
+<form method="POST" class="recommend-form" id="recommendForm">
+    <label for="watched-input">Enter anime titles you’ve watched (comma‑separated):</label>
+
+    <!-- Textarea + inline autocomplete -->
+    <div class="ta-wrapper">
+        <textarea id="watched-input" name="liked_titles" rows="4"
+                  placeholder="e.g. Naruto, One Piece, Death Note">{{ liked_titles }}</textarea>
+        <div id="title-autocomplete" class="ta-autocomplete"></div>
+    </div>
+
+    <p style="margin-top:2rem; font-weight:600">Optional: Filter by genres</p>
+    <div class="genre-checkboxes">
+        {% for g in genres %}
+        <label>
+            <input type="checkbox" name="genres" value="{{ g }}"
+                   {% if g in selected_genres %}checked{% endif %}>
+            <span>{{ g }}</span>
+        </label>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="explore-btn" style="margin-top:1rem">
+        Get Recommendations
+    </button>
+</form>
+
+<!-- Loader -->
+<div id="loader" class="loader" style="display:none;"></div>
+
+{% if recommended %}
+<hr style="margin:2rem 0">
+<h2>Recommended for You</h2>
+<div class="cards-grid">
+    {% for a in recommended %}
+    <div class="anime-card">
+        <img src="{{ a.poster or url_for('static', filename='img/logo.svg') }}" alt="{{ a.title }}">
+        <h3>
+            <a href="{{ url_for('anime_detail', title=a.title|urlencode) }}">
+                {{ a.title }}
+            </a>
+        </h3>
+        <p class="score">Similarity: {{ (a.score * 100) | round(2) }}%</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- JS: loader, textarea autocomplete, and form reset -->
+{% if recommended %}
+<script>window.clearFormAfterLoad = true;</script>
+{% endif %}
+
+<script>
+const API_BASE = "http://localhost:8000";
+const ta  = document.getElementById("watched-input");
+const box = document.getElementById("title-autocomplete");
+let debounceId = null;
+
+ta.addEventListener("input", () => {
+  const lastToken = ta.value.split(",").pop().trim();
+  if (!lastToken) { box.innerHTML = ""; return; }
+
+  clearTimeout(debounceId);
+  debounceId = setTimeout(() => {
+    fetch(`${API_BASE}/autocomplete?prefix=${encodeURIComponent(lastToken)}&limit=6`)
+      .then(r => r.json())
+      .then(data => {
+        box.innerHTML = "";
+        data.forEach(a => {
+          const div = document.createElement("div");
+          div.className = "ta-item";
+          div.innerHTML = `
+            <img src="${a.poster_url}" alt="">
+            <span>${a.title}</span>
+          `;
+          div.onclick = () => {
+            const parts = ta.value.split(",");
+            parts[parts.length - 1] = " " + a.title;
+            ta.value = parts.join(",").replace(/^ /, "");
+            ta.focus();
+            box.innerHTML = "";
+          };
+          box.appendChild(div);
+        });
+      });
+  }, 250);
+});
+
+document.addEventListener("click", (e) => {
+  if (!box.contains(e.target) && e.target !== ta) box.innerHTML = "";
+});
+
+const form = document.getElementById("recommendForm");
+form.addEventListener("submit", () => {
+  document.getElementById("loader").style.display = "block";
+});
+
+// This block safely clears the form only if flagged from backend
+if (window.clearFormAfterLoad) {
+  window.onload = () => {
+    form.reset();
+    document.getElementById("title-autocomplete").innerHTML = "";
+  };
+}
+</script>
+
+{% endblock %}

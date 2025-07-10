@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Explore by Genres{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Explore by Genres</h1>
+
+<form method="POST" class="genre-form">
+    <div class="genre-checkboxes">
+        {% for g in genres %}
+        <label>
+    <input type="checkbox" name="genres" value="{{ g }}"
+           {% if g in selected %}checked{% endif %}>
+    <span>{{ g }}</span>
+</label>
+
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="explore-btn" style="margin-top:1rem">
+        Show Recommendations
+    </button>
+</form>
+
+<!-- Loader shown during fetch -->
+<div id="loader" class="loader" style="display:none;"></div>
+
+{% if anime_list %}
+<hr style="margin:2rem 0">
+<h2>Top Matches</h2>
+<div class="cards-grid">
+    {% for a in anime_list %}
+    <div class="anime-card">
+        <img src="{{ a.poster or url_for('static', filename='img/logo.svg') }}" alt="{{ a.title }}">
+        <h3>
+            <a href="{{ url_for('anime_detail', title=a.title|urlencode) }}">
+                {{ a.title }}
+            </a>
+        </h3>
+        <p class="score">Score: {{ a.score }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+document.querySelector("form").addEventListener("submit", () => {
+  document.getElementById("loader").style.display = "block";
+});
+</script>
+{% endblock %}
